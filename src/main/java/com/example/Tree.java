@@ -43,9 +43,9 @@ public class Tree {
     public String toString() {
         StringBuilder info = new StringBuilder();
         for(TreeNode node : getAllNodes()) {
-            info.append("Node ID: ").append(node.getId())
-                    .append(", Parent ID: ").append(node.getParent() != null ? node.getParent().getId() : "None")
-                    .append(", Children IDs: ");
+            info.append("Узел: ").append(node.getId())
+                    .append(", Родитель: ").append(node.getParent() != null ? node.getParent().getId() : "None")
+                    .append(", Дети: ");
             node.getChildren().forEach(child -> info.append(child.getId()).append(" "));
             info.append("\n");
         }
@@ -64,13 +64,15 @@ public class Tree {
         findNodeById(root, childId).ifPresent(child -> {
             if (root == child) {
                 parent.addChild(child);
+                child.setParent(parent);
                 root = parent;
             } else {
                 TreeNode oldParent = child.getParent();
-                oldParent.addChild(parent);
-                parent.setParent(oldParent);
                 parent.addChild(child);
                 child.setParent(parent);
+                oldParent.addChild(parent);
+                oldParent.removeChild(child);
+                parent.setParent(oldParent);
             }
         });
     }
@@ -79,9 +81,9 @@ public class Tree {
         Optional<TreeNode> toRemove = findNodeById(root, nodeId);
         toRemove.ifPresent(node -> {
             TreeNode parent = node.getParent();
-            parent.getChildren().remove(node);
+            parent.removeChild(node);
             node.getChildren().forEach(child -> child.setParent(parent));
-            parent.getChildren().addAll(node.getChildren());
+            node.getChildren().forEach(parent::addChild);
         });
     }
 
