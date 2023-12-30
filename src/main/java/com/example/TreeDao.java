@@ -10,16 +10,13 @@ import java.util.Map;
 
 public class TreeDao {
 
-    // Чтение всех деревьев из БД и их построение
     public List<Tree> readTrees(Session session) {
         List<TreeEntity> treeEntities = session.createQuery("from TreeEntity", TreeEntity.class).list();
         Map<Integer, TreeNode> nodes = new HashMap<>();
-        // Создание узлов на основе сущностей
         for (TreeEntity entity : treeEntities) {
             nodes.putIfAbsent(entity.getId(), new TreeNode(entity.getId()));
         }
         TreeNode root = null;
-        // Связывание узлов
         for (TreeEntity entity : treeEntities) {
             TreeNode currentNode = nodes.get(entity.getId());
             if (entity.getParentId() != null) {
@@ -27,7 +24,7 @@ public class TreeDao {
                 currentNode.setParent(parent);
                 parent.addChild(currentNode);
             } else {
-                root = currentNode; // Если parentId is null, это корень
+                root = currentNode;
             }
         }
         List<Tree> result = new ArrayList<>();
@@ -38,7 +35,6 @@ public class TreeDao {
         return result;
     }
 
-    // Сохранение информации о деревьях в БД
     public void writeTrees(List<Tree> trees, Session session) {
         Transaction tx = session.beginTransaction();
         for (Tree tree : trees) {
@@ -53,7 +49,6 @@ public class TreeDao {
         }
         tx.commit();
     }
-    // Расширим интерфейс TreeDao для работы со SwingWorkers
     public TreeNode findNodeById(int nodeId, Session session) {
         return (TreeNode) session.get(TreeNode.class, nodeId);
     }
@@ -85,7 +80,6 @@ public class TreeDao {
         tx.commit();
     }
 
-    // Заполнение БД пар ID узлов деревьев
     public static void populateDB(Session session) {
         int [] pairs = {1, 1, 2, 1, 3, 1, 4, 4, 5, 4};
         Transaction tx = session.beginTransaction();

@@ -52,7 +52,6 @@ public class Tree {
         return info.toString();
     }
 
-    // Метод по добавлению ребенка по ID
     public void addChildById(int parentId, int childId) {
         TreeNode child = new TreeNode(childId);
         findNodeById(root, parentId).ifPresent(parent -> {
@@ -60,8 +59,6 @@ public class Tree {
             child.setParent(parent);
         });
     }
-
-    // Метод по добавлению родителя по ID
     public void addParentById(int childId, int parentId) {
         TreeNode parent = new TreeNode(parentId);
         findNodeById(root, childId).ifPresent(child -> {
@@ -78,7 +75,6 @@ public class Tree {
         });
     }
 
-    // Метод для удаления узла по ID
     public void removeNodeById(int nodeId) {
         Optional<TreeNode> toRemove = findNodeById(root, nodeId);
         toRemove.ifPresent(node -> {
@@ -89,7 +85,6 @@ public class Tree {
         });
     }
 
-    // Метод поиска узла по ID
     private Optional<TreeNode> findNodeById(TreeNode node, int id) {if (node.getId() == id) {
         return Optional.of(node);
     }
