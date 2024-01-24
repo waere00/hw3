@@ -12,6 +12,7 @@ public class Main {
     public static void main(String[] args) {
         try (SessionFactory factory = new Configuration().configure().buildSessionFactory()) {
             Session session = factory.openSession();
+
             TreeDao.populateDB(session);
             TreeGUI treegui = new TreeGUI(session);
             while (treegui.isVisible()) {

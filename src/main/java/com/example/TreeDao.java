@@ -57,10 +57,13 @@ public class TreeDao {
     public static void populateDB(Session session) {
         int [] pairs = {1, 1, 2, 1, 3, 1, 4, 4, 5, 4};
         Transaction tx = session.beginTransaction();
-        for (int i = 0; i < pairs.length; i += 2) {
-            TreeEntity treeEntity = new TreeEntity(pairs[i + 1]);
-            treeEntity.setId(pairs[i]);
-            session.save(treeEntity);
+        List<TreeEntity> treeEntities = session.createQuery("from TreeEntity", TreeEntity.class).list();
+        if (treeEntities.isEmpty()) {
+            for (int i = 0; i < pairs.length; i += 2) {
+                TreeEntity treeEntity = new TreeEntity(pairs[i + 1]);
+                treeEntity.setId(pairs[i]);
+                session.save(treeEntity);
+            }
         }
         tx.commit();
     }
